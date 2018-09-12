@@ -7,6 +7,7 @@ import javax.persistence.PersistenceException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,11 @@ public class UsuarioResource {
 	@GetMapping("/listar")
 	public List<Usuario> listaProdutos(){
 		return usuarioRepository.findAll();
+	}
+	
+	@GetMapping("/listar/{id}")
+	public Usuario listaProdutos(@PathVariable(value="id") int id){
+		return this.usuarioRepository.findById(id);
 	}
 	
 	@PostMapping("/cadastrar")
