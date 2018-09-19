@@ -22,6 +22,7 @@ public class Venda implements Serializable{
 	private String titulo;
 	private Integer valor;
 	
+	
 	@Column(name="id_usuario_vendedor")
 	private Integer idUsuarioVendedor;
 	

@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -31,16 +31,13 @@ public class Usuario implements Serializable {
 	private String login;
 	private String senha;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name="id_meus_pontos")
+	@OneToMany(targetEntity=MeusPontos.class, cascade = CascadeType.ALL, mappedBy="idUsuario", orphanRemoval=true)
 	private List<MeusPontos> meusPontos;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name="id_usuario_vendedor")
+	@OneToMany(targetEntity=Venda.class, cascade = CascadeType.ALL, mappedBy="idUsuarioVendedor", orphanRemoval=true)
 	private List<Venda> idUsuarioVendedor;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
-	@JoinColumn(name="id_usuario_comprador")
+	@OneToMany(targetEntity=Venda.class, cascade = CascadeType.ALL, mappedBy="idUsuarioComprador", orphanRemoval=true)
 	private List<Venda> idUsuarioComprador;
 	
 	public Usuario(){}

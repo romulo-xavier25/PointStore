@@ -1,13 +1,17 @@
 package br.com.pointsrore.apirest.models;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -27,9 +31,8 @@ public class MeusPontos implements Serializable {
 	@JoinColumn(name="id_usuairio", referencedColumnName="id")
 	private Usuario idUsuario;
 	
-	@ManyToOne(targetEntity=Usuario.class)
-	@JoinColumn(name="id_venda", referencedColumnName="id")
-	private Venda idVenda;
+	@OneToMany(targetEntity=Venda.class, mappedBy="idMeusPontos", cascade=CascadeType.ALL)
+	private List<Venda> idVenda;
 	
 	public MeusPontos(){}
 
@@ -65,11 +68,11 @@ public class MeusPontos implements Serializable {
 		this.idUsuario = idUsuario;
 	}
 
-	public Venda getIdVenda() {
+	public List<Venda> getIdVenda() {
 		return idVenda;
 	}
 
-	public void setIdVenda(Venda idVenda) {
+	public void setIdVenda(List<Venda> idVenda) {
 		this.idVenda = idVenda;
 	}
 
