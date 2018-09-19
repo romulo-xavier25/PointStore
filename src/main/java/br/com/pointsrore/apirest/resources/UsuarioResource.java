@@ -3,6 +3,8 @@ package br.com.pointsrore.apirest.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class UsuarioResource {
 	@Autowired
 	private MeusPontosRepository meusPontosRepository;
 	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	@GetMapping("status")
 	public String statusURL(){
 		return "status ok!!";
@@ -46,6 +51,14 @@ public class UsuarioResource {
 	
 	@PostMapping("/cadastrar")
 	public String cadastrarUsario(@RequestBody Usuario jsonUsuario){
+		Boolean aprovadorDecadastro = vericarEmailNoBanco(jsonUsuario);
+
+		if(aprovadorDecadastro == false){
+			return "usuario nao pode ser cadastrado, email existente em nosso banco de dados";
+		}
+		
+		jsonUsuario.setCredito(100);
+		
 		try {
 			this.usuarioRepository.save(jsonUsuario);
 			List<MeusPontos> listaDosPontos = this.getMeusPontosDefault(jsonUsuario);
@@ -53,14 +66,24 @@ public class UsuarioResource {
 			MeusPontos gol = listaDosPontos.get(1);
 			this.meusPontosRepository.save(tam);
 			this.meusPontosRepository.save(gol);
-			System.out.println(listaDosPontos);
-			
 		} catch (PersistenceException pe) {
 			System.out.println("ocorreu um erro que foi: " + pe.getMessage());
 		}
-		List<MeusPontos> listaDosPontos = this.getMeusPontosDefault(jsonUsuario);
-		
 		return "usuario cadastrado com sucesso!!";
+	}
+
+	public Boolean vericarEmailNoBanco(Usuario user){
+		Usuario usuario;
+		try {
+			usuario = (Usuario) this.entityManager.createQuery("SELECT user from Usuario user where user.email = :email")
+					.setParameter("email", user.getEmail()).getSingleResult();
+			if(usuario.getEmail().length() > 0){
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return true;
 	}
 	
 	public List<MeusPontos> getMeusPontosDefault(Usuario jsonUsuario){
